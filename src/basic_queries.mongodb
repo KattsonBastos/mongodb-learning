@@ -1,0 +1,84 @@
+// CONSTANTS
+const database = 'academy';
+
+// The current database to use.
+use(database);
+
+// Getting in touch: unique values and counts
+//sorted by name
+db.alunos.find().sort({nome: -1});
+
+// collection's numeber of documents
+db.alunos.find().count();
+
+db.alunos.distinct(
+    'nivel'
+);
+
+db.alunos.distinct(
+    'periodo_ingresso'
+);
+
+db.alunos.distinct(
+    'id_forma_ingresso'
+);
+
+db.alunos.distinct(
+    'ano_ingresso'
+);
+
+// number of unique courses
+db.alunos.distinct(
+    'id_curso'
+).length;
+
+// FIND QUERIES
+// getting only documents for G in 'nivel'
+db.alunos.find(
+    {
+        nivel: 'G'
+    }
+);
+
+// nivel equals to G or entry year equals to 2017
+db.alunos.find(
+    {
+        $or: [
+            {nivel: 'G'},
+            {ano_ingresso: 2017}
+        ]
+    }
+);
+
+// entry year greater or equal to 2017 sorted by id
+db.alunos.find(
+    {
+        ano_ingresso: 
+        {
+            $gte: 2017
+        }
+    }
+).sort(
+    {
+        id_discente: 1
+    }
+);
+
+// counting id_curso
+db.alunos.aggregate(
+    {
+        $group: {
+            _id:"$id_curso", 
+            count:{ $sum: 1 } 
+        }
+    }
+);
+
+db.alunos.aggregate(
+    {
+        $group: {
+            _id:"$ano_ingresso", 
+            nivel_by_year:{ $addToSet: "$nivel" } 
+        }
+    }
+);
